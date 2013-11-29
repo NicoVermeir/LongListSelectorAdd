@@ -2,10 +2,19 @@
 using System.Collections.Specialized;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Media;
 using Microsoft.Phone.Controls;
 
 namespace LongListSelectorAdd.Controls
 {
+    public enum PositionOnAdd
+    {
+        Top,
+        Default,
+        NewItem
+    }
+
     public class ExtendedSelector : LongListSelector
     {
         public static readonly DependencyProperty SelectedItemProperty =
@@ -13,6 +22,15 @@ namespace LongListSelectorAdd.Controls
 
         public static readonly DependencyProperty SelectionModeProperty =
             DependencyProperty.Register("SelectionMode", typeof(SelectionMode), typeof(ExtendedSelector), new PropertyMetadata(default(SelectionMode)));
+
+        public static readonly DependencyProperty RepositionOnAddStyleProperty =
+            DependencyProperty.Register("RepositionOnAddStyle", typeof(PositionOnAdd), typeof(ExtendedSelector), new PropertyMetadata(PositionOnAdd.Default));
+
+        public PositionOnAdd RepositionOnAddStyle
+        {
+            get { return (PositionOnAdd)GetValue(RepositionOnAddStyleProperty); }
+            set { SetValue(RepositionOnAddStyleProperty, value); }
+        }
 
         public SelectionMode SelectionMode
         {
@@ -61,7 +79,20 @@ namespace LongListSelectorAdd.Controls
                 ((INotifyCollectionChanged)ItemsSource).CollectionChanged += (sender2, args2) =>
                 {
                     if (ItemsSource.Count > 0 && args2.NewItems != null)
-                        ScrollTo(ItemsSource[0]);
+                    {
+                        switch (RepositionOnAddStyle)
+                        {
+                            case PositionOnAdd.NewItem:
+                                int index = ItemsSource.IndexOf(args2.NewItems[0]);
+
+                                if (index >= 0)
+                                    ScrollTo(ItemsSource[index]);
+                                break;
+                            case PositionOnAdd.Top:
+                                ScrollTo(ItemsSource[0]);
+                                break;
+                        }
+                    }
                 };
             };
         }
