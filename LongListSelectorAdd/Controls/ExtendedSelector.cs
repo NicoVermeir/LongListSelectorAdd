@@ -2,8 +2,6 @@
 using System.Collections.Specialized;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Media;
 using Microsoft.Phone.Controls;
 
 namespace LongListSelectorAdd.Controls
@@ -21,7 +19,7 @@ namespace LongListSelectorAdd.Controls
             DependencyProperty.Register("SelectedItem", typeof(object), typeof(ExtendedSelector), new PropertyMetadata(default(object)));
 
         public static readonly DependencyProperty SelectionModeProperty =
-            DependencyProperty.Register("SelectionMode", typeof(SelectionMode), typeof(ExtendedSelector), new PropertyMetadata(default(SelectionMode)));
+            DependencyProperty.Register("SelectionMode", typeof(SelectionMode), typeof(ExtendedSelector), new PropertyMetadata(SelectionMode.Single));
 
         public static readonly DependencyProperty RepositionOnAddStyleProperty =
             DependencyProperty.Register("RepositionOnAddStyle", typeof(PositionOnAdd), typeof(ExtendedSelector), new PropertyMetadata(PositionOnAdd.Default));
@@ -46,8 +44,6 @@ namespace LongListSelectorAdd.Controls
 
         public ExtendedSelector()
         {
-            SelectionMode = SelectionMode.Single;
-
             SelectionChanged += (sender, args) =>
             {
                 if (SelectionMode == SelectionMode.Single)
